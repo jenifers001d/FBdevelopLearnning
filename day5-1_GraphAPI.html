@@ -171,7 +171,9 @@
             FB.logout(function(response) {
                 console.log("logout");
                 console.log(response);
-                main.innerHTML = "log out~";
+                welcome.style.display = "block";
+                main.innerHTML = "已登出";
+                byebye.style.display = "none";
             });
         }
         //使用自己的按鈕，呼叫login()
