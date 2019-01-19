@@ -39,6 +39,8 @@
         };
         firebase.initializeApp(config);
 
+        let db = firebase.database(); //建立與資料庫的連線
+
         let currentUser = null;
 
         //當使用者的登入狀態改變時，執行此函式
@@ -62,20 +64,22 @@
         let signInBtn = document.getElementById("signIn");
         let postBtn = document.getElementById("post");
         let provider = new firebase.auth.FacebookAuthProvider();
-        provider.addScope("user_birthday");
+        provider.addScope("user_birthday"); //預設是姓名、大頭貼、電子郵件
 
-        function signIn() {
-            firebase.auth().signInWithPopup(provider).then(function(result) {}).catch(function(error) {
-                var errorCode = error.code;
-                console.log("Error: ", error);
-                console.log("Error code: ", errorCode);
+        function signIn() { //使用跳出式登入視窗
+            firebase.auth().signInWithPopup(provider)
+                .then(function(result) {
+                    console.log("login~");
+                })
+                .catch(function(error) {
+                    var errorCode = error.code;
+                    console.log("Error: ", error);
+                    console.log("Error code: ", errorCode);
 
-            });
+                });
         }
 
         //將留言和留言者資料放入資料庫
-        let db = firebase.database();
-
         function post() {
             let id = currentUser.uid;
             let name = currentUser.displayName;
@@ -87,7 +91,7 @@
                 time: Date.now()
             }
             //加入資料庫
-            let ref = db.ref("/message_board");
+            let ref = db.ref("/message_board"); //產生資料路徑
             ref.push(data, function(error) {
                 if (error) {
                     console.log("Error: ", error);
