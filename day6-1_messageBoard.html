@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>day6-1</title>
+</head>
+
+<body>
+    <h1>day6-1 Message Board</h1>
+    <hr>
+    <div id="welcome" style="display: none">
+        <button id="signIn">登入</button>
+    </div>
+    <div id="member" style="display: none">Hello</div>
+    <hr>
+    <div id="list">Message List
+        <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+
+
+    <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase-database.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyBgYvQ3Bid9wjTDLcUmxWAEmHWI2X5Vzc4",
+            authDomain: "my-first-test-project-227712.firebaseapp.com",
+            databaseURL: "https://my-first-test-project-227712.firebaseio.com",
+            projectId: "my-first-test-project-227712",
+        };
+        firebase.initializeApp(config);
+
+        //當使用者的登入狀態改變時，執行此函式
+        firebase.auth().onAuthStateChanged(function(user) {
+            let welcm = document.getElementById("welcome");
+            let membr = document.getElementById("member");
+            welcm.style.display = "none";
+            membr.style.display = "none";
+            if (user) {
+                // User is signed in.
+                console.log("login");
+                console.log(user);
+                membr.style.display = "block";
+
+            } else {
+                // User is signed out.
+                console.log(user);
+                welcm.style.display = "block";
+            }
+        });
+
+        let signInBtn = document.getElementById("signIn");
+        let provider = new firebase.auth.FacebookAuthProvider();
+        provider.addScope("user_birthday");
+
+        function signIn() {
+            firebase.auth().signInWithPopup(provider).then(function(result) {
+                // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+                var token = result.credential.accessToken;
+                // The signed-in user info.
+                var user = result.user;
+                // ...
+            }).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // The email of the user's account used.
+                var email = error.email;
+                // The firebase.auth.AuthCredential type that was used.
+                var credential = error.credential;
+                console.log("Error: ", error);
+                console.log("Error code: ", errorCode);
+
+            });
+        }
+
+
+        signInBtn.addEventListener("click", signIn);
+    </script>
+
+</body>
+</html>
