@@ -77,7 +77,7 @@
         let db = firebase.database();
 
         function post() {
-            let id = currentUser.id;
+            let id = currentUser.uid;
             let name = currentUser.displayName;
             let content = document.getElementById("content");
             let data = {
