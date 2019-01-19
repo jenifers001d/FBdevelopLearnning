@@ -36,7 +36,7 @@
     <p style="color: #ff4444">https://graph.facebook.com/ID?fields=id,name,email,gender,birthday</p>
     <p style="color: #ff4444">https://graph.facebook.com/ID/Edges?fields=id,created_time</p>
     <hr>
-    <div id=" welcome" style="display:none">
+    <div id="welcome" style="display:none">
         <button id="btn">Please Login</button>
     </div>
     <div id="main" style="display:none">hello</div>
@@ -99,8 +99,6 @@
         let btn = document.getElementById("btn");
         let sharebtn = document.getElementById("sharebtn");
         
-        console.log(welcome);
-        console.log(welcome.style);
 
         function statusChangeCallback(response) {
             welcome.style.display = "none";
