@@ -113,7 +113,18 @@
                     data.push(item.val());
                 });
                 console.log(data);
+                show(data);
             });
+        }
+
+        function show(data) {
+            let list = document.getElementById("list");
+            list.innerHTML = "";
+            let message;
+            for (let i = 0; i < data.length; i++) {
+                message = data[i];
+                list.innerHTML = message.name.bold() + " " + message.content + "<hr>" + list.innerHTML
+            }
         }
         window.addEventListener("load", readMsg);
     </script>
