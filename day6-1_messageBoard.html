@@ -130,7 +130,7 @@
                     list.innerHTML = message.name.bold() + " " + message.content + "<hr>" + list.innerHTML;
                 } else {
                     //登入的人和留言的人一樣
-                    if (currentUser.uid === message.id) {
+                    if (currentUser.uid === message.user_id) {
                         list.innerHTML = message.name.bold() + " " + message.content + "<button onclick='del(\"" + message.key + "\");'>Delete</button>" + "<hr>" + list.innerHTML;
                     } else { //登入的是不同人
                         list.innerHTML = message.name.bold() + " " + message.content + "<hr>" + list.innerHTML;
