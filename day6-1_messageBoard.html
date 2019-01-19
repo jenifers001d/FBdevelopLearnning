@@ -18,11 +18,6 @@
     </div>
     <hr>
     <div id="list">Message List
-        <ul>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
     </div>
 
 
@@ -85,7 +80,7 @@
             let name = currentUser.displayName;
             let content = document.getElementById("content");
             let data = {
-                id: id,
+                user_id: id,
                 name: name,
                 content: content.value,
                 time: Date.now()
@@ -110,23 +105,55 @@
             ref.once("value", function(snapshot) {
                 console.log(snapshot);
                 let data = [];
+                //firebase有提供forEach方法，對snapshot物件進行處理
                 snapshot.forEach(function(item) {
-                    data.push(item.val());
+                    console.log("item: ", item);
+                    let msg = item.val();
+                    msg.key = item.key;
+                    data.push(msg);
                 });
                 console.log(data);
                 show(data);
             });
         }
 
+        let message;
+
         function show(data) {
             let list = document.getElementById("list");
             list.innerHTML = "";
-            let message;
+
             for (let i = 0; i < data.length; i++) {
                 message = data[i];
-                list.innerHTML = message.name.bold() + " " + message.content + "<hr>" + list.innerHTML
+                //沒有人登入，僅顯示留言列表
+                if (currentUser === null) {
+                    list.innerHTML = message.name.bold() + " " + message.content + "<hr>" + list.innerHTML;
+                } else {
+                    //登入的人和留言的人一樣
+                    if (currentUser.uid === message.id) {
+                        list.innerHTML = message.name.bold() + " " + message.content + "<button onclick='del(\"" + message.key + "\");'>Delete</button>" + "<hr>" + list.innerHTML;
+                    } else { //登入的是不同人
+                        list.innerHTML = message.name.bold() + " " + message.content + "<hr>" + list.innerHTML;
+                    }
+                }
+
             }
+            console.log(message);
         }
+
+        //let del = document.getElementById("del");
+
+        function del(key) {
+            let ref = db.ref("/message_board/" + key);
+            ref.remove(function(error) {
+                if (error) {
+                    console.log("Error: ", error);
+                } else {
+                    console.log("remove!");
+                }
+            });
+        }
+        //del.addEventListener("click", del);
         window.addEventListener("load", readMsg);
     </script>
 
