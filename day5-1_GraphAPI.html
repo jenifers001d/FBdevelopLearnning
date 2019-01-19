@@ -24,7 +24,8 @@
     #sharebtn,
     #sendbtn {
         font-size: 15px;
-        display: block;
+        display: inline-block;
+        padding: 5px;
         margin: auto;
     }
 
@@ -165,6 +166,19 @@
         }
         //使用自己的按鈕，呼叫share()
         sharebtn.addEventListener("click", share);
+
+        //點擊自己的按鈕，呼叫FB.ui()，href是要分享的網址
+
+        function send() {
+            FB.ui({
+                method: 'send',
+                link: 'https://jenifers001d.github.io/FBdevelopLearnning/day5-1_GraphAPI.html',
+            }, function(response) {
+                console.log(response);
+            });
+        }
+        //使用自己的按鈕，呼叫share()
+        sendbtn.addEventListener("click", send);
 
         //點擊自己的按鈕，呼叫FB.logout()
         function logout() {
