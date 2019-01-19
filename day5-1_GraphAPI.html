@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>day5-1</title>
+</head>
+
+<style>
+    #welcome,
+    #main {
+        width: 50%;
+        margin: 10px auto;
+        text-align: center;
+        font-size: 20px;
+    }
+
+    #btn {
+        font-size: 15px;
+    }
+
+    #sharebtn {
+        font-size: 15px;
+        display: block;
+        margin: auto;
+    }
+
+    img {
+        width: 600px;
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <h1>day5-1 Graph API</h1>
+    <p style="color: #ff4444">https://graph.facebook.com/ID?fields=id,name,email,gender,birthday</p>
+    <p style="color: #ff4444">https://graph.facebook.com/ID/Edges?fields=id,created_time</p>
+    <hr>
+    <div id=" welcome" style="display:none">
+        <button id="btn">Please Login</button>
+    </div>
+    <div id="main" style="display:none">hello</div>
+    <button id="sharebtn">分享</button>
+    <hr>
+    <p style="color: #ff4444">每個FB使用者在不同的應用程式登入都有一個特別的ID，不能被其他應用程式使用，如果是登入的使用者自己，ID可以用me來代替</p>
+    <p style="color: #ff4444">FB.api()中只要用/ID開頭即可</p>
+    <p style="color: #ff4444">To read an edge, you must include both the node ID(me這個節點的ID) and the edge name(ex: feed) in the path. For example, /user nodes have a /feed edge which can return all Post nodes on a User.</p>
+    <p style="color: #ff4444">Notice that the response contains not only the IDs of the Post nodes in the collection, but the created_time and message fields as well. This is common. Most edges will include one or more fields by default. 通常預設出現的Edges有不只一個fields</p>
+    <p style="color: #ff4444">Fields are node properties. When you query a node it will return a set of fields by default, as the examples above show. However, you can specify which fields you want returned. This will override the defaults and return only the fields you specify, and the ID of the object, which is always returned. 可以自訂想出現的fields，會覆蓋原有的預設值，且Edges的資料的ID必定出現</p>
+    <hr>
+    <img src="../image/day5_Node_me.jpg" alt="none">
+    <img src="../image/day5_Node_me_fields_feed.jpg" alt="none">
+    <img src="../image/day5_Edge_me_feed.jpg" alt="none">
+    <img src="../image/day5_Edge_me_feed_fields.jpg" alt="none">
+    <hr>
+    <div>
+        <h3>Supplement</h3>
+        <h4>Graph API</h4>
+        <ul>
+            <li><a href="https://www.tonylin.idv.tw/dokuwiki/doku.php/facebook:basic:graphapi" target="_blank">Graph API是什麼東東?</a></li>
+            <li><a href="https://developers.facebook.com/docs/graph-api/using-graph-api/?locale=zh_TW#fieldexpansion" target="_blank">Using the Graph API</a></li>
+
+        </ul>
+        <h4>自訂分享時的預覽畫面</h4>
+        <ul>
+            <li><a href="https://developers.facebook.com/docs/sharing/best-practices" target="_blank">網站與行動應用程式的分享最佳作法</a></li>
+            <li><a href="https://developers.facebook.com/tools/debug/" target="_blank">分享偵錯工具</a></li>
+
+        </ul>
+    </div>
+
+    <script>
+        //1.載入Facebook Javascript SDK
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        //2.套件載入完成之後，呼叫 window.fbAsyncInit 函式
+        window.fbAsyncInit = function() {
+            //初始化 Facebook SDK 套件
+            FB.init({
+                appId: '2292119871045628', //應用程式編號
+                xfbml: true,
+                version: 'v3.2'
+            });
+            //初始化完後，偵測使用者登入狀態，呼叫statusChangeCallback()
+            FB.getLoginStatus(function(response) {
+                statusChangeCallback(response);
+            });
+        };
+
+        let welcome = document.getElementById("welcome");
+        let main = document.getElementById("main");
+        let btn = document.getElementById("btn");
+        let sharebtn = document.getElementById("sharebtn");
+
+        function statusChangeCallback(response) {
+            welcome.style.display = "none";
+            main.style.display = "none";
+
+            console.log('statusChangeCallback');
+            console.log(response);
+            if (response.status === 'connected') { //使用者已登入
+                testAPI(); //抓取使用者的資料
+                main.style.display = "block";
+            } else { //使用者未登入，鼓勵使用者登入
+                welcome.style.display = "block";
+            }
+        }
+
+        function testAPI() {
+            console.log('Welcome!  Fetching your information.... ');
+            FB.api('/me?fields=id,name,email,gender,birthday', function(response) {
+                console.log(response);
+                main.innerHTML =
+                    'Thanks for logging in, ' + response.name + '!';
+            });
+
+            FB.api('/me/feed', function(response) {
+                console.log(response);
+            });
+        }
+
+        //點擊自己的按鈕，呼叫FB.login()，scope是取得的資料權限
+        function login() {
+            FB.login(function(response) {
+                console.log("login");
+                statusChangeCallback(response);
+            }, {
+                scope: "email,user_gender,user_posts"
+            });
+        }
+        //使用自己的按鈕，呼叫login()
+        btn.addEventListener("click", login);
+
+        //點擊自己的按鈕，呼叫FB.ui()，href是要分享的網址
+        //可以自訂分享時的預覽畫面
+        function share() {
+            FB.ui({
+                method: 'share',
+                href: 'https://jenifers001d.github.io/FBdevelopLearnning/day5-1_GraphAPI.html',
+            }, function(response) {
+                console.log(response);
+            });
+        }
+        //使用自己的按鈕，呼叫share()
+        sharebtn.addEventListener("click", share);
+    </script>
+
+</body>
+
+</html>
