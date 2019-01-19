@@ -96,7 +96,8 @@
                 if (error) {
                     console.log("Error: ", error);
                 } else {
-                    console.log("post!");
+                    content.value = "";
+                    readMsg();
                 }
             });
         }
