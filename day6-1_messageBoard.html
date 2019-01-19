@@ -13,7 +13,7 @@
         <button id="signIn">登入</button>
     </div>
     <div id="member" style="display: none">
-        <textarea id="content" cols="30" rows="10"></textarea>
+        <textarea id="content" cols="60" rows="7"></textarea>
         <button id="post">發佈</button>
     </div>
     <hr>
@@ -104,6 +104,18 @@
         signInBtn.addEventListener("click", signIn);
         postBtn.addEventListener("click", post);
 
+        function readMsg() {
+            let ref = db.ref("/message_board");
+            ref.once("value", function(snapshot) {
+                console.log(snapshot);
+                let data = [];
+                snapshot.forEach(function(item) {
+                    data.push(item.val());
+                });
+                console.log(data);
+            });
+        }
+        window.addEventListener("load", readMsg);
     </script>
 
 </body>
