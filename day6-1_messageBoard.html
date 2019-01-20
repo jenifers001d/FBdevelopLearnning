@@ -84,8 +84,11 @@
                     datachkpoint.key = childSnapshot.key
                     data.push(datachkpoint);
                 });
+                console.log(data);
+                showmsg(data);
             });
-            console.log(data);
+
+
         }
 
         function showmsg(data) {
@@ -96,7 +99,7 @@
 
         function abc() {
             readmsg();
-            showmsg(data);
+
         }
         window.addEventListener("load", abc);
 
