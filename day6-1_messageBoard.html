@@ -34,6 +34,8 @@
         };
         firebase.initializeApp(config);
 
+        let currentUser;
+
         firebase.auth().onAuthStateChanged(function(user) {
             let wel = document.getElementById("welcome");
             let mem = document.getElementById("member");
@@ -43,6 +45,7 @@
             if (user) {
                 // User is signed in.
                 mem.style.display = "block";
+                currentUser = user;
             } else {
                 // User is signed out.
                 wel.style.display = "block";
@@ -55,7 +58,7 @@
         let list = document.getElementById("list");
         list.innerHTML = "";
 
-        let currentUser;
+
         let provider = new firebase.auth.FacebookAuthProvider();
         provider.addScope('user_birthday');
 
