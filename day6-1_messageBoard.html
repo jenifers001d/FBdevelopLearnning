@@ -78,6 +78,7 @@
 
         function readmsg() {
             ref.once("value", function(sanpshot) {
+                console.log(sanpshot);
                 sanpshot.forEach(function(childSnapshot) {
                     let datachkpoint = childSnapshot;
                     datachkpoint.key = childSnapshot.key
