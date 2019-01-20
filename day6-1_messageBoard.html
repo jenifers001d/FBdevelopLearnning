@@ -135,7 +135,7 @@
             ref.on("value", function(snapshot) {
                 let data = [];
                 //firebase有提供forEach方法，對snapshot物件進行處理
-                sanpshot.forEach(function(childSnapshot) {
+                snapshot.forEach(function(childSnapshot) {
                     //另外製造一個key和childSnapshot內容物同層的物件
                     let datachkpoint = childSnapshot.val();
                     datachkpoint.key = childSnapshot.key
