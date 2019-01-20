@@ -53,7 +53,7 @@
         });
 
         let sibtn = document.getElementById("signIn");
-        let content = document.getElementById("content");
+
         let postbtn = document.getElementById("post");
         let list = document.getElementById("list");
         list.innerHTML = "";
@@ -81,6 +81,7 @@
         let ref = firebase.database().ref("/message_board");
 
         function post() {
+            let content = document.getElementById("content");
             let data = {
                 id: currentUser.uid,
                 name: currentUser.displayName,
