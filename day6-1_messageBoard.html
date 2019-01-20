@@ -15,10 +15,16 @@
     .posterName {
         font-weight: bold;
         font-size: 14px;
+        position: relative;
     }
 
-    .psterSay {
+    .posterSay {
         font-size: 12px;
+    }
+
+    .delBtn {
+        position: absolute;
+        right: 0;
     }
 
 </style>
@@ -70,7 +76,6 @@
 
         let sibtn = document.getElementById("signIn");
         let postbtn = document.getElementById("post");
-        let list = document.getElementById("list");
 
         let provider = new firebase.auth.FacebookAuthProvider();
         provider.addScope('user_birthday');
@@ -125,7 +130,7 @@
         }
 
         function showmsg(data) {
-            list.innerHTML = "";
+            let list = document.getElementById("list");
             for (let i = 0; i < data.length; i++) {
                 let el = document.createElement("div");
                 let elName = document.createElement("div");
@@ -143,8 +148,9 @@
 
                 if (currentUser.uid === data[i].user_id) {
                     let delBtn = document.createElement("button");
+                    delBtn.classList.add("delBtn");
                     delBtn.textContent = "Delete";
-                    elContent.appendChild(delBtn);
+                    elName.appendChild(delBtn);
                     delBtn.addEventListener("click", function() {
                         let ref = firebase.database().ref("/message_board/" + data[i].key);
                         ref.remove(function(error) {
