@@ -83,7 +83,7 @@
         function post() {
             let content = document.getElementById("content");
             let data = {
-                id: currentUser.uid,
+                user_id: currentUser.uid,
                 name: currentUser.displayName,
                 content: content.value,
                 time: Date.now()
@@ -93,13 +93,13 @@
                     console.log("Error: ", error);
                 } else {
                     content.value = "";
-                    readmsg();
+                    //readmsg();
                 }
             });
         }
 
         function readmsg() {
-            ref.once("value", function(sanpshot) {
+            ref.on("value", function(sanpshot) {
                 console.log(sanpshot.val());
                 sanpshot.forEach(function(childSnapshot) {
                     //另外製造一個key和childSnapshot內容物同層的物件
