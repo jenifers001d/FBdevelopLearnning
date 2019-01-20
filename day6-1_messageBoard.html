@@ -50,9 +50,10 @@
         });
 
         let sibtn = document.getElementById("signIn");
-        let content = document.getElementById("list");
+        let content = document.getElementById("content");
         let postbtn = document.getElementById("post");
-        content.innerHTML = "";
+        let list = document.getElementById("list");
+        list.innerHTML = "";
 
         let currentUser;
         let provider = new firebase.auth.FacebookAuthProvider();
@@ -76,10 +77,28 @@
         let data = [];
         let ref = firebase.database().ref("/message_board");
 
+        function post() {
+            let data = {
+                id: currentUser.uid,
+                name: currentUser.displayName,
+                content: content.value,
+                time: Date.now()
+            }
+            ref.push(data, function(error) {
+                if (error) {
+                    console.log("Error: ", error);
+                } else {
+                    content.value = "";
+                    readmsg();
+                }
+            });
+        }
+
         function readmsg() {
             ref.once("value", function(sanpshot) {
                 console.log(sanpshot.val());
                 sanpshot.forEach(function(childSnapshot) {
+                    //另外製造一個key和childSnapshot內容物同層的物件
                     let datachkpoint = childSnapshot.val();
                     datachkpoint.key = childSnapshot.key
                     data.push(datachkpoint);
@@ -93,15 +112,10 @@
 
         function showmsg(data) {
             for (let i = 0; i < data.length; i++) {
-                content.innerHTML = data[i].user_id + ": " + data[i].content + content.innerHTML;
+                list.innerHTML = data[i].name + ": " + data[i].content + "<hr>" + list.innerHTML;
             }
         }
-
-        function abc() {
-            readmsg();
-
-        }
-        window.addEventListener("load", abc);
+        window.addEventListener("load", readmsg);
 
     </script>
 
