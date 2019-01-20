@@ -57,7 +57,9 @@
         };
         firebase.initializeApp(config);
 
-        let currentUser = null;
+        let currentUser = {
+            uid: null
+        };
 
         firebase.auth().onAuthStateChanged(function(user) {
             let wel = document.getElementById("welcome");
@@ -70,7 +72,9 @@
                 currentUser = user;
             } else {
                 wel.style.display = "block";
-                currentUser = null;
+                currentUser = {
+                    uid: null
+                };
             }
         });
 
@@ -131,7 +135,7 @@
 
         function showmsg(data) {
             let list = document.getElementById("list");
-            list.textContent = "";
+            list.textContent = ""; //記得
             for (let i = data.length - 1; i >= 0; i--) {
                 let el = document.createElement("div");
                 let elName = document.createElement("div");
