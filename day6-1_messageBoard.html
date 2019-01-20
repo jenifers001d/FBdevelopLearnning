@@ -50,7 +50,9 @@
         });
 
         let sibtn = document.getElementById("signIn");
+        let content = document.getElementById("content");
         let postbtn = document.getElementById("post");
+        content.innerHTML = "";
 
         let currentUser;
         let provider = new firebase.auth.FacebookAuthProvider();
@@ -70,6 +72,31 @@
                 });
         }
         sibtn.addEventListener("click", signin);
+
+        let data = [];
+        let ref = firebase.database.ref("/message_board");
+
+        function readmsg() {
+            ref.once("value", function(sanpshot) {
+                sanpshot.forEach(function(childSnapshot) {
+                    let datachkpoint = childSnapshot;
+                    datachkpoint.key = childSnapshot.key
+                    data.pusch(datachkpoint);
+                });
+            });
+        }
+
+        function showmsg(data) {
+            for (let i = 0; i < data.length; i++) {
+                content.innerHTML = data.user_id + ": " + data.content + content.innerHTML;
+            }
+        }
+
+        function abc() {
+            readmsg();
+            showmsg(data);
+        }
+        window.addEventListener("load", abc);
 
     </script>
 
