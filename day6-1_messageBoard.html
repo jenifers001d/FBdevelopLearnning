@@ -34,37 +34,33 @@
         };
         firebase.initializeApp(config);
 
-        let db = firebase.database(); //建立與資料庫的連線
-
-        let currentUser = null;
-
-        //當使用者的登入狀態改變時，執行此函式
         firebase.auth().onAuthStateChanged(function(user) {
-            let welcm = document.getElementById("welcome");
-            let membr = document.getElementById("member");
-            welcm.style.display = "none";
-            membr.style.display = "none";
-            if (user) { // User is signed in.
-                console.log(user);
-                currentUser = user;
-                membr.style.display = "block";
+            let wel = document.getElementById("welcome");
+            let mem = document.getElementById("member");
+            wel.style.display = "none";
+            mem.style.display = "none";
 
-            } else { // User is signed out.
-                console.log(user);
-                currentUser = null;
-                welcm.style.display = "block";
+            if (user) {
+                // User is signed in.
+                mem.style.display = "block";
+            } else {
+                // User is signed out.
+                wel.style.display = "block";
             }
         });
 
-        let signInBtn = document.getElementById("signIn");
-        let postBtn = document.getElementById("post");
-        let provider = new firebase.auth.FacebookAuthProvider();
-        provider.addScope("user_birthday"); //預設是姓名、大頭貼、電子郵件
+        let sibtn = document.getElementById("signIn");
+        let postbtn = document.getElementById("post");
 
-        function signIn() { //使用跳出式登入視窗
+        let currentUser;
+        let provider = new firebase.auth.FacebookAuthProvider();
+        provider.addScope('user_birthday');
+
+        function signin() {
             firebase.auth().signInWithPopup(provider)
                 .then(function(result) {
-                    console.log("login~");
+                    console.log(result);
+
                 })
                 .catch(function(error) {
                     var errorCode = error.code;
@@ -73,89 +69,8 @@
 
                 });
         }
+        sibtn.addEventListener("click", signin);
 
-        //將留言和留言者資料放入資料庫
-        function post() {
-            let id = currentUser.uid;
-            let name = currentUser.displayName;
-            let content = document.getElementById("content");
-            let data = {
-                user_id: id,
-                name: name,
-                content: content.value,
-                time: Date.now()
-            }
-            //加入資料庫
-            let ref = db.ref("/message_board"); //產生資料路徑
-            ref.push(data, function(error) {
-                if (error) {
-                    console.log("Error: ", error);
-                } else {
-                    content.value = "";
-                    readMsg();
-                }
-            });
-        }
-
-        signInBtn.addEventListener("click", signIn);
-        postBtn.addEventListener("click", post);
-
-        function readMsg() {
-            let ref = db.ref("/message_board");
-            ref.once("value", function(snapshot) {
-                console.log(snapshot);
-                let data = [];
-                //firebase有提供forEach方法，對snapshot物件進行處理
-                snapshot.forEach(function(item) {
-                    console.log("item: ", item);
-                    let msg = item.val();
-                    msg.key = item.key;
-                    data.push(msg);
-                });
-                console.log(data);
-                show(data);
-            });
-        }
-
-        let message;
-
-        function show(data) {
-            let list = document.getElementById("list");
-            list.innerHTML = "";
-
-            for (let i = 0; i < data.length; i++) {
-                message = data[i];
-                //沒有人登入，僅顯示留言列表
-                if (currentUser === null) {
-                    list.innerHTML = message.name.bold() + " " + message.content + "<hr>" + list.innerHTML;
-                } else {
-                    //登入的人和留言的人一樣
-                    if (currentUser.uid === message.user_id) {
-                        list.innerHTML = message.name.bold() + " " + message.content + "<button onclick='del(\"" + message.key + "\");'>Delete</button>" + "<hr>" + list.innerHTML;
-                    } else { //登入的是不同人
-                        list.innerHTML = message.name.bold() + " " + message.content + "<hr>" + list.innerHTML;
-                    }
-                }
-
-            }
-            console.log(message);
-        }
-
-        //let del = document.getElementById("del");
-
-        function del(key) {
-            let ref = db.ref("/message_board/" + key);
-            ref.remove(function(error) {
-                if (error) {
-                    console.log("Error: ", error);
-                } else {
-                    console.log("remove!");
-                    show(data);
-                }
-            });
-        }
-        //del.addEventListener("click", del);
-        window.addEventListener("load", readMsg);
     </script>
 
 </body>
