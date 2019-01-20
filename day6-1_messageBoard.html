@@ -6,6 +6,12 @@
     <title>day6-1</title>
 </head>
 <style>
+    textarea,
+    button {
+        display: block;
+        margin: 10px auto;
+    }
+
     .postFrame {
         border-top: 1px solid #F2F3F5;
         border-bottom: 1px solid #F2F3F5;
@@ -26,20 +32,20 @@
         position: absolute;
         right: 0;
     }
-
 </style>
 
 <body>
     <h1>day6-1 Message Board</h1>
     <hr>
+
     <div id="welcome" style="display: none">
         <button id="signIn">登入</button>
     </div>
     <div id="member" style="display: none">
+        <h3>Leave Message</h3>
         <textarea id="content" cols="60" rows="7"></textarea>
         <button id="post">發佈</button>
     </div>
-    <hr>
     <div id="list">Message List
     </div>
 
@@ -57,37 +63,39 @@
         };
         firebase.initializeApp(config);
 
-        let currentUser = {
+        let currentUser = { //不先定義uid，showMsg會出錯
             uid: null
         };
 
+        //當使用者的登入狀態改變時，執行此函式
         firebase.auth().onAuthStateChanged(function(user) {
-            let wel = document.getElementById("welcome");
-            let mem = document.getElementById("member");
-            wel.style.display = "none";
-            mem.style.display = "none";
-
-            if (user) {
-                mem.style.display = "block";
+            let welcm = document.getElementById("welcome");
+            let membr = document.getElementById("member");
+            welcm.style.display = "none";
+            membr.style.display = "none";
+            if (user) { // User is signed in.
+                membr.style.display = "block";
                 currentUser = user;
-            } else {
-                wel.style.display = "block";
+
+            } else { // User is signed out.
+                welcm.style.display = "block";
                 currentUser = {
                     uid: null
                 };
             }
         });
 
-        let sibtn = document.getElementById("signIn");
-        let postbtn = document.getElementById("post");
+        let signInBtn = document.getElementById("signIn");
+        let postBtn = document.getElementById("post");
 
+        //建立提供使用者資訊的登入介面
         let provider = new firebase.auth.FacebookAuthProvider();
-        provider.addScope('user_birthday');
+        provider.addScope('user_birthday'); //預設是姓名、大頭貼、電子郵件
 
-        function signin() {
-            firebase.auth().signInWithPopup(provider)
+        function signIn() {
+            firebase.auth().signInWithPopup(provider) //使用跳出式登入視窗
                 .then(function(result) {
-                    console.log(result);
+                    console.log("Logged In~");
                 })
                 .catch(function(error) {
                     var errorCode = error.code;
@@ -95,11 +103,13 @@
                     console.log("Error code: ", errorCode);
                 });
         }
-        sibtn.addEventListener("click", signin);
+        signInBtn.addEventListener("click", signIn);
 
-
+        //建立與資料庫的連線，及連線的資料路徑
         let ref = firebase.database().ref("/message_board");
 
+
+        //將留言和留言者資料放入資料庫
         function post() {
             let content = document.getElementById("content");
             let data = {
@@ -108,6 +118,8 @@
                 content: content.value,
                 time: Date.now()
             }
+            //將物件資料加入資料庫
+            let ref = db.ref("/message_board"); //產生資料路徑
             ref.push(data, function(error) {
                 if (error) {
                     console.log("Error: ", error);
@@ -117,25 +129,27 @@
             });
         }
 
-        function readmsg() {
-            ref.on("value", function(sanpshot) {
+
+        function readMsg() {
+            ref.on("value", function(snapshot) {
                 let data = [];
+                //firebase有提供forEach方法，對snapshot物件進行處理
                 sanpshot.forEach(function(childSnapshot) {
                     //另外製造一個key和childSnapshot內容物同層的物件
                     let datachkpoint = childSnapshot.val();
                     datachkpoint.key = childSnapshot.key
                     data.push(datachkpoint);
                 });
-                console.log(data);
-                showmsg(data);
+                //記得showMsg放在這，當資料用callback取得後放入data，data才不會是空陣列
+                showMsg(data);
             });
-
-
         }
 
-        function showmsg(data) {
+
+        function showMsg(data) {
             let list = document.getElementById("list");
-            list.textContent = ""; //記得
+            list.textContent = ""; //記得每次重整時，將版面清空
+            //資料反過來紀錄，最新留言(最後一筆data)才會出現在最上方
             for (let i = data.length - 1; i >= 0; i--) {
                 let el = document.createElement("div");
                 let elName = document.createElement("div");
@@ -151,27 +165,32 @@
                 el.appendChild(elName);
                 el.appendChild(elContent);
 
+                //如果現在登入的使用者是留言的人，出現刪除按鈕
                 if (currentUser.uid === data[i].user_id) {
                     let delBtn = document.createElement("button");
                     delBtn.classList.add("delBtn");
                     delBtn.textContent = "Delete";
                     elName.appendChild(delBtn);
-                    delBtn.addEventListener("click", function() {
-                        let ref = firebase.database().ref("/message_board/" + data[i].key);
-                        ref.remove(function(error) {
-                            if (error) {
-                                console.log("Error: ", error);
-                            } else {
-                                console.log("remove!");
-                            }
-                        });
-                    });
+                    delBtn.key = data[i].key;
+                    delBtn.addEventListener("click", del);
+
+
+                    /*  delBtn.addEventListener("click", function() {
+                          let ref = firebase.database().ref("/message_board/" + data[i].key);
+                          ref.remove(function(error) {
+                              if (error) {
+                                  console.log("Error: ", error);
+                              } else {
+                                  console.log("remove!");
+                              }
+                          });
+                      });*/
                 }
             }
         }
 
-        function del(key) {
-            let ref = firebase.database().ref("/message_board/" + key);
+        function del() {
+            let ref = firebase.database().ref("/message_board/" + this.key);
             ref.remove(function(error) {
                 if (error) {
                     console.log("Error: ", error);
@@ -181,8 +200,7 @@
             });
         }
         window.addEventListener("load", readmsg);
-        postbtn.addEventListener("click", post);
-
+        postBtn.addEventListener("click", post);
     </script>
 
 </body>
