@@ -120,7 +120,6 @@
                 time: Date.now()
             }
             //將物件資料加入資料庫
-            let ref = db.ref("/message_board"); //產生資料路徑
             ref.push(data, function(error) {
                 if (error) {
                     console.log("Error: ", error);
