@@ -74,7 +74,7 @@
         sibtn.addEventListener("click", signin);
 
         let data = [];
-        let ref = firebase.database.ref("/message_board");
+        let ref = firebase.database().ref("/message_board");
 
         function readmsg() {
             ref.once("value", function(sanpshot) {
