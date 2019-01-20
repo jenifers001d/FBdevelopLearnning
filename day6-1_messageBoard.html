@@ -93,7 +93,7 @@
 
         function showmsg(data) {
             for (let i = 0; i < data.length; i++) {
-                content.innerHTML = data.user_id + ": " + data.content + content.innerHTML;
+                content.innerHTML = data[i].user_id + ": " + data[i].content + content.innerHTML;
             }
         }
 
