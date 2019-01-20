@@ -99,9 +99,10 @@
         }
 
         function readmsg() {
-            let data = [];
+            
             ref.on("value", function(sanpshot) {
                 console.log(sanpshot.val());
+                let data = [];
                 sanpshot.forEach(function(childSnapshot) {
                     //另外製造一個key和childSnapshot內容物同層的物件
                     let datachkpoint = childSnapshot.val();
