@@ -11,6 +11,7 @@
     <hr>
     <div id="welcome" style="display: none">
         <button id="signIn">登入</button>
+        <button onclick="del('/-key???')"></button>
     </div>
     <div id="member" style="display: none">
         <textarea id="content" cols="60" rows="7"></textarea>
@@ -56,7 +57,7 @@
 
         let postbtn = document.getElementById("post");
         let list = document.getElementById("list");
-        list.innerHTML = "";
+
 
 
         let provider = new firebase.auth.FacebookAuthProvider();
@@ -77,7 +78,7 @@
         }
         sibtn.addEventListener("click", signin);
 
-        
+
         let ref = firebase.database().ref("/message_board");
 
         function post() {
@@ -99,7 +100,6 @@
         }
 
         function readmsg() {
-            
             ref.on("value", function(sanpshot) {
                 console.log(sanpshot.val());
                 let data = [];
@@ -117,9 +117,25 @@
         }
 
         function showmsg(data) {
+            list.innerHTML = "";
             for (let i = 0; i < data.length; i++) {
-                list.innerHTML = data[i].name + ": " + data[i].content + "<hr>" + list.innerHTML;
+                if (currentUser.uid === data[i].user_id) {
+                    list.innerHTML = data[i].name + ": " + data[i].content + "<button onclick='del(\"" + data[i].key + "\")'>Delete</button>" + "<hr>" + list.innerHTML
+                } else {
+                    list.innerHTML = data[i].name + ": " + data[i].content + "<hr>" + list.innerHTML;
+                }
             }
+        }
+
+        function del(key) {
+            let ref = firebase.database().ref("/message_board/" + key);
+            ref.remove(function(error) {
+                if (error) {
+                    console.log("Error: ", error);
+                } else {
+                    console.log("remove!");
+                }
+            });
         }
         window.addEventListener("load", readmsg);
         postbtn.addEventListener("click", post);
