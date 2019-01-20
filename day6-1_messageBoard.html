@@ -174,24 +174,24 @@
                     delBtn.classList.add("delBtn");
                     delBtn.textContent = "Delete";
                     elName.appendChild(delBtn);
-                    //delBtn.key = data[i].key;
-                    delBtn.addEventListener("click", del(data[i].key));
+                    delBtn.key = data[i].key;
+                    delBtn.addEventListener("click", del;
+                    }
                 }
             }
-        }
 
-        function del(key) {
-            let ref = firebase.database().ref("/message_board/" + key);
-            ref.remove(function(error) {
-                if (error) {
-                    console.log("Error: ", error);
-                } else {
-                    console.log("remove!");
-                }
-            });
-        }
-        window.addEventListener("load", readMsg);
-        postBtn.addEventListener("click", post);
+            function del() {
+                let ref = firebase.database().ref("/message_board/" + this.key);
+                ref.remove(function(error) {
+                    if (error) {
+                        console.log("Error: ", error);
+                    } else {
+                        console.log("remove!");
+                    }
+                });
+            }
+            window.addEventListener("load", readMsg);
+            postBtn.addEventListener("click", post);
 
     </script>
 
