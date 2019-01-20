@@ -81,7 +81,7 @@
                 sanpshot.forEach(function(childSnapshot) {
                     let datachkpoint = childSnapshot;
                     datachkpoint.key = childSnapshot.key
-                    data.pusch(datachkpoint);
+                    data.push(datachkpoint);
                 });
             });
         }
