@@ -5,13 +5,29 @@
     <meta charset="UTF-8">
     <title>day6-1</title>
 </head>
+<style>
+    .postFrame {
+        border-top: 1px solid #F2F3F5;
+        border-bottom: 1px solid #F2F3F5;
+        padding: 15px;
+    }
+
+    .posterName {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .psterSay {
+        font-size: 12px;
+    }
+
+</style>
 
 <body>
     <h1>day6-1 Message Board</h1>
     <hr>
     <div id="welcome" style="display: none">
         <button id="signIn">登入</button>
-        <button onclick="del('/-key???')"></button>
     </div>
     <div id="member" style="display: none">
         <textarea id="content" cols="60" rows="7"></textarea>
@@ -35,7 +51,7 @@
         };
         firebase.initializeApp(config);
 
-        let currentUser;
+        let currentUser = null;
 
         firebase.auth().onAuthStateChanged(function(user) {
             let wel = document.getElementById("welcome");
@@ -44,21 +60,17 @@
             mem.style.display = "none";
 
             if (user) {
-                // User is signed in.
                 mem.style.display = "block";
                 currentUser = user;
             } else {
-                // User is signed out.
                 wel.style.display = "block";
+                currentUser = null;
             }
         });
 
         let sibtn = document.getElementById("signIn");
-
         let postbtn = document.getElementById("post");
         let list = document.getElementById("list");
-
-
 
         let provider = new firebase.auth.FacebookAuthProvider();
         provider.addScope('user_birthday');
@@ -67,13 +79,11 @@
             firebase.auth().signInWithPopup(provider)
                 .then(function(result) {
                     console.log(result);
-
                 })
                 .catch(function(error) {
                     var errorCode = error.code;
                     console.log("Error: ", error);
                     console.log("Error code: ", errorCode);
-
                 });
         }
         sibtn.addEventListener("click", signin);
@@ -94,14 +104,12 @@
                     console.log("Error: ", error);
                 } else {
                     content.value = "";
-                    //readmsg();
                 }
             });
         }
 
         function readmsg() {
             ref.on("value", function(sanpshot) {
-                console.log(sanpshot.val());
                 let data = [];
                 sanpshot.forEach(function(childSnapshot) {
                     //另外製造一個key和childSnapshot內容物同層的物件
@@ -119,10 +127,34 @@
         function showmsg(data) {
             list.innerHTML = "";
             for (let i = 0; i < data.length; i++) {
+                let el = document.createElement("div");
+                let elName = document.createElement("div");
+                let elContent = document.createElement("div");
+
+                el.classList.add("postFrame");
+                elName.classList.add("posterName");
+                elContent.classList.add("posterSay");
+                elName.textContent = data[i].name;
+                elContent.textContent = data[i].content;
+
+                list.appendChild(el);
+                el.appendChild(elName);
+                el.appendChild(elContent);
+
                 if (currentUser.uid === data[i].user_id) {
-                    list.innerHTML = data[i].name + ": " + data[i].content + "<button onclick='del(\"" + data[i].key + "\")'>Delete</button>" + "<hr>" + list.innerHTML
-                } else {
-                    list.innerHTML = data[i].name + ": " + data[i].content + "<hr>" + list.innerHTML;
+                    let delBtn = document.createElement("button");
+                    delBtn.textContent = "Delete";
+                    elContent.appendChild(delBtn);
+                    delBtn.addEventListener("click", function() {
+                        let ref = firebase.database().ref("/message_board/" + data[i].key);
+                        ref.remove(function(error) {
+                            if (error) {
+                                console.log("Error: ", error);
+                            } else {
+                                console.log("remove!");
+                            }
+                        });
+                    });
                 }
             }
         }
