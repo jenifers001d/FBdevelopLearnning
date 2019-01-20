@@ -65,6 +65,7 @@
         };
         firebase.initializeApp(config);
 
+        let list = document.getElementById("list");
         let currentUser = { //不先定義uid，showMsg會出錯
             uid: null
         };
@@ -78,6 +79,7 @@
             if (user) { // User is signed in.
                 membr.style.display = "block";
                 currentUser = user;
+                list.textContent = ""; //記得每次重整時，將版面清空
                 readMsg();
 
             } else { // User is signed out.
@@ -149,7 +151,6 @@
 
 
         function showMsg(data) {
-            let list = document.getElementById("list");
             list.textContent = ""; //記得每次重整時，將版面清空
             //資料反過來紀錄，最新留言(最後一筆data)才會出現在最上方
             for (let i = data.length - 1; i >= 0; i--) {
