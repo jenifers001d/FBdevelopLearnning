@@ -78,6 +78,7 @@
             if (user) { // User is signed in.
                 membr.style.display = "block";
                 currentUser = user;
+                readMsg();
 
             } else { // User is signed out.
                 welcm.style.display = "block";
@@ -172,26 +173,14 @@
                     delBtn.classList.add("delBtn");
                     delBtn.textContent = "Delete";
                     elName.appendChild(delBtn);
-                    delBtn.key = data[i].key;
-                    delBtn.addEventListener("click", del);
-
-
-                    /*  delBtn.addEventListener("click", function() {
-                          let ref = firebase.database().ref("/message_board/" + data[i].key);
-                          ref.remove(function(error) {
-                              if (error) {
-                                  console.log("Error: ", error);
-                              } else {
-                                  console.log("remove!");
-                              }
-                          });
-                      });*/
+                    //delBtn.key = data[i].key;
+                    delBtn.addEventListener("click", del(data[i].key));
                 }
             }
         }
 
-        function del() {
-            let ref = firebase.database().ref("/message_board/" + this.key);
+        function del(key) {
+            let ref = firebase.database().ref("/message_board/" + key);
             ref.remove(function(error) {
                 if (error) {
                     console.log("Error: ", error);
