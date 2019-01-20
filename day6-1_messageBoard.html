@@ -50,7 +50,7 @@
         });
 
         let sibtn = document.getElementById("signIn");
-        let content = document.getElementById("content");
+        let content = document.getElementById("list");
         let postbtn = document.getElementById("post");
         content.innerHTML = "";
 
@@ -84,6 +84,7 @@
                     data.push(datachkpoint);
                 });
             });
+            console.log(data);
         }
 
         function showmsg(data) {
