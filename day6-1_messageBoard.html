@@ -54,6 +54,7 @@
 
 
     <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js"></script>
+    <!--因為需要登入驗證，所以需要firebase-auth-->
     <script src="https://www.gstatic.com/firebasejs/5.8.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase-database.js"></script>
     <script>
@@ -77,8 +78,10 @@
             let membr = document.getElementById("member");
             welcm.style.display = "none";
             membr.style.display = "none";
+            //如果有登入，會回傳一個「登入的使用者物件」
             if (user) { // User is signed in.
                 membr.style.display = "block";
+                //現在的使用者 = 登入的使用者資訊
                 currentUser = user;
                 readMsg();
 
@@ -93,12 +96,13 @@
         let signInBtn = document.getElementById("signIn");
         let postBtn = document.getElementById("post");
 
-        //建立提供使用者資訊的登入介面
+        //建立提供使用者資訊的登入介面，此處用Facebook登入
         let provider = new firebase.auth.FacebookAuthProvider();
         provider.addScope('user_birthday'); //預設是姓名、大頭貼、電子郵件
 
         function signIn() {
-            firebase.auth().signInWithPopup(provider) //使用跳出式登入視窗
+            //使用跳出式登入視窗
+            firebase.auth().signInWithPopup(provider)
                 .then(function(result) {
                     console.log("Logged In~");
                 })
@@ -113,17 +117,17 @@
         //建立與資料庫的連線，及連線的資料路徑
         let ref = firebase.database().ref("/message_board");
 
-
-        //將留言和留言者資料放入資料庫
+        //將留言和留言者(登入者)資料放入資料庫
         function post() {
             let content = document.getElementById("content");
+            //將「登入的使用者物件」資料、留言、留言時間放入data物件
             let data = {
                 user_id: currentUser.uid,
                 name: currentUser.displayName,
                 content: content.value,
                 time: Date.now()
             }
-            //將物件資料加入資料庫
+            //將data物件加入資料庫
             ref.push(data, function(error) {
                 if (error) {
                     console.log("Error: ", error);
@@ -135,12 +139,15 @@
 
 
         function readMsg() {
+            //用on()，當資料刷新時就會重跑一次
             ref.on("value", function(snapshot) {
                 let data = [];
                 //firebase有提供forEach方法，對snapshot物件進行處理
                 snapshot.forEach(function(childSnapshot) {
                     //另外製造一個key和childSnapshot內容物同層的物件
                     let datachkpoint = childSnapshot.val();
+                    //文件有說明：.key是物件的上一層的名稱
+                    //例如：snapshot.key會是message_board
                     datachkpoint.key = childSnapshot.key
                     data.push(datachkpoint);
                 });
@@ -175,6 +182,8 @@
                     delBtn.classList.add("delBtn");
                     delBtn.textContent = "Delete";
                     elName.appendChild(delBtn);
+                    //標籤元素Element(delBtn)是物件的一種
+                    //將key綁在delBtn物件的屬性上
                     delBtn.key = data[i].key;
                     delBtn.addEventListener("click", del);
                 }
@@ -182,6 +191,7 @@
         }
 
         function del() {
+            //this表示執行此函式時，當下外層的物件
             let ref = firebase.database().ref("/message_board/" + this.key);
             ref.remove(function(error) {
                 if (error) {
