@@ -124,6 +124,7 @@
                 currentUser = {
                     uid: null
                 };
+                readMsg();
             }
         });
 
@@ -242,7 +243,6 @@
         function signOut() {
             firebase.auth().signOut()
                 .then(function () {
-                    readMsg();
                     // Sign-out successful.
                     console.log("Sign out");
                 }).catch(function (error) {
