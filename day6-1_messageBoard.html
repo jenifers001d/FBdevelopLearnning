@@ -213,7 +213,7 @@
                 //如果現在登入的使用者是留言的人，出現刪除按鈕
                 if (currentUser.uid === data[i].user_id) {
                     let delBtn = document.createElement("button");
-                    delBtn.classList.add("btn btn-default");
+                    delBtn.classList.add("delBtn", "btn", "btn-default");
                     delBtn.textContent = "Delete";
                     elName.appendChild(delBtn);
                     //標籤元素Element(delBtn)是物件的一種
