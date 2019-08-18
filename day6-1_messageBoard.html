@@ -129,6 +129,7 @@
 
         let signInBtn = document.getElementById("signIn");
         let postBtn = document.getElementById("post");
+        let logoutBtn = document.getElementById("logOut");
 
         //建立提供使用者資訊的登入介面，此處用Facebook登入
         let provider = new firebase.auth.FacebookAuthProvider();
@@ -213,7 +214,7 @@
                 //如果現在登入的使用者是留言的人，出現刪除按鈕
                 if (currentUser.uid === data[i].user_id) {
                     let delBtn = document.createElement("button");
-                    delBtn.classList.add("delBtn", "btn", "btn-default");
+                    delBtn.classList.add("delBtn", "btn", "btn-default", "btn-sm");
                     delBtn.textContent = "Delete";
                     elName.appendChild(delBtn);
                     //標籤元素Element(delBtn)是物件的一種
@@ -237,6 +238,14 @@
         }
         window.addEventListener("load", readMsg);
         postBtn.addEventListener("click", post);
+
+        function logOut() {
+            FB.logout(function (response) {
+                // user is now logged out
+                console.log(response);
+            });
+        }
+        logoutBtn.addEventListener("click", logOut);
     </script>
 
 </body>
