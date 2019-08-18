@@ -33,7 +33,7 @@
     textarea,
     #signIn,
     #post,
-    #logOut {
+    #signOut {
         display: block;
         margin: 10px auto;
     }
@@ -64,9 +64,9 @@
 <body>
     <div class="header">
         <h1 class="text-center">Message Board</h1>
-        <div id="logOut-des" style="display: none">
-            <p class="lead text-center">Would you like to log out? </p>
-            <button id="logOut" class="btn btn-primary">Log out</button>
+        <div id="signOut-des" style="display: none">
+            <p class="lead text-center">Would you like to sign out? </p>
+            <button id="signOut" class="btn btn-primary">Sign out</button>
         </div>
     </div>
     <div class="container">
@@ -107,14 +107,14 @@
         firebase.auth().onAuthStateChanged(function (user) {
             let welcm = document.getElementById("welcome");
             let membr = document.getElementById("member");
-            let logout = document.getElementById("logOut-des");
+            let signout = document.getElementById("signOut-des");
             welcm.style.display = "none";
             membr.style.display = "none";
-            logout.style.display = "none";
+            signout.style.display = "none";
             //如果有登入，會回傳一個「登入的使用者物件」
             if (user) { // User is signed in.
                 membr.style.display = "block";
-                logout.style.display = "block";
+                signout.style.display = "block";
                 //現在的使用者 = 登入的使用者資訊
                 currentUser = user;
                 readMsg();
@@ -129,7 +129,7 @@
 
         let signInBtn = document.getElementById("signIn");
         let postBtn = document.getElementById("post");
-        let logoutBtn = document.getElementById("logOut");
+        let signoutBtn = document.getElementById("signOut");
 
         //建立提供使用者資訊的登入介面，此處用Facebook登入
         let provider = new firebase.auth.FacebookAuthProvider();
@@ -239,13 +239,20 @@
         window.addEventListener("load", readMsg);
         postBtn.addEventListener("click", post);
 
-        function logOut() {
-            FB.logout(function (response) {
-                // user is now logged out
-                console.log(response);
-            });
+        function signOut() {
+            firebase.auth().signOut()
+                .then(function (result) {
+                    // Sign-out successful.
+                    console.log(result);
+                    console.log("Sign out");
+                }).catch(function (error) {
+                    // An error happened.
+                    var errorCode = error.code;
+                    console.log("Error: ", error);
+                    console.log("Error code: ", errorCode);
+                });
         }
-        logoutBtn.addEventListener("click", logOut);
+        signoutBtn.addEventListener("click", signOut);
     </script>
 
 </body>
