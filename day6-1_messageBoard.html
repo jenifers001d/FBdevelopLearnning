@@ -4,8 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <title>day6-1</title>
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <style>
+    body {
+        background-color: rgb(238, 224, 207);
+
+    }
+
+    .header {
+        background-color: rgb(240, 211, 173);
+        width: 100%;
+        padding: 40px 0px;
+    }
+
+    h1 {
+        margin: 10px;
+        font-size: 50px;
+    }
+
+    #welcome {
+        margin: 20px;
+    }
+
     textarea,
     #signIn,
     #post {
@@ -21,35 +45,41 @@
 
     .posterName {
         font-weight: bold;
-        font-size: 17px;
+        font-size: 18px;
         padding-bottom: 10px;
         position: relative;
     }
 
     .posterSay {
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .delBtn {
         position: absolute;
         right: 0;
     }
-
 </style>
 
 <body>
-    <h1>day6-1 Message Board</h1>
-    <hr>
-
-    <div id="welcome" style="display: none">
-        <button id="signIn">登入</button>
+    <div class="header">
+        <h1 class="text-center">Message Board</h1>
+        <div id="logOut-des" style="display: none">
+            <p class="lead text-center">Would you like to log out? </p>
+            <button id="logOut" class="btn btn-primary">Log out</button>
+        </div>
     </div>
-    <div id="member" style="display: none">
-        <h3>Leave Message</h3>
-        <textarea id="content" cols="60" rows="7"></textarea>
-        <button id="post">發佈</button>
-    </div>
-    <div id="list">Message List
+    <div class="container">
+        <div id="welcome" style="display: none">
+            <p class="lead text-center">Please sing in to leave messages! </p>
+            <button id="signIn" class="btn btn-primary">Sign in</button>
+        </div>
+        <div id="member" style="display: none">
+            <h3>Leave Message</h3>
+            <textarea id="content" cols="60" rows="7" class="form-control" placeholder="Message..."></textarea>
+            <button id="post" class="btn btn-default">Post</button>
+        </div>
+        <div id="list">
+        </div>
     </div>
 
 
@@ -73,17 +103,19 @@
         };
 
         //當使用者的登入狀態改變時，執行此函式
-        firebase.auth().onAuthStateChanged(function(user) {
+        firebase.auth().onAuthStateChanged(function (user) {
             let welcm = document.getElementById("welcome");
             let membr = document.getElementById("member");
+            let logout = document.getElementById("logOut-des");
             welcm.style.display = "none";
             membr.style.display = "none";
+            logout.style.display = "none";
             //如果有登入，會回傳一個「登入的使用者物件」
             if (user) { // User is signed in.
                 membr.style.display = "block";
+                logout.style.display = "block";
                 //現在的使用者 = 登入的使用者資訊
                 currentUser = user;
-                console.log(currentUser);
                 readMsg();
 
             } else { // User is signed out.
@@ -104,10 +136,10 @@
         function signIn() {
             //使用跳出式登入視窗
             firebase.auth().signInWithPopup(provider)
-                .then(function(result) {
+                .then(function (result) {
                     console.log("Logged In~");
                 })
-                .catch(function(error) {
+                .catch(function (error) {
                     var errorCode = error.code;
                     console.log("Error: ", error);
                     console.log("Error code: ", errorCode);
@@ -129,7 +161,7 @@
                 time: Date.now()
             }
             //將data物件加入資料庫
-            ref.push(data, function(error) {
+            ref.push(data, function (error) {
                 if (error) {
                     console.log("Error: ", error);
                 } else {
@@ -141,10 +173,10 @@
 
         function readMsg() {
             //用on()，當資料刷新時就會重跑一次
-            ref.on("value", function(snapshot) {
+            ref.on("value", function (snapshot) {
                 let data = [];
                 //firebase有提供forEach方法，對snapshot物件進行處理
-                snapshot.forEach(function(childSnapshot) {
+                snapshot.forEach(function (childSnapshot) {
                     //另外製造一個key和childSnapshot內容物同層的物件
                     let datachkpoint = childSnapshot.val();
                     //文件有說明：.key是物件的上一層的名稱
@@ -164,7 +196,7 @@
             //資料反過來紀錄，最新留言(最後一筆data)才會出現在最上方
             for (let i = data.length - 1; i >= 0; i--) {
                 let el = document.createElement("div");
-                let elName = document.createElement("div");
+                let elName = document.createElement("h4");
                 let elContent = document.createElement("div");
 
                 el.classList.add("postFrame");
@@ -194,7 +226,7 @@
         function del() {
             //this表示執行此函式時，當下外層的物件
             let ref = firebase.database().ref("/message_board/" + this.key);
-            ref.remove(function(error) {
+            ref.remove(function (error) {
                 if (error) {
                     console.log("Error: ", error);
                 } else {
@@ -204,7 +236,6 @@
         }
         window.addEventListener("load", readMsg);
         postBtn.addEventListener("click", post);
-
     </script>
 
 </body>
