@@ -6,8 +6,7 @@
     <title>day6-1</title>
     <!-- Bootstrap -->
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <style>
     body {
@@ -59,9 +58,14 @@
         position: absolute;
         right: 0;
     }
+
 </style>
 
 <body>
+    <!-- username: gnufoajidi_1547971817@tfbnw.net -->
+    <!-- password: Abigail0123456789 -->
+    <!-- username: open_hfvypsu_user@tfbnw.net -->
+    <!-- password: Open0123456789 -->
     <div class="header">
         <h1 class="text-center">Message Board</h1>
         <div id="signOut-des" style="display: none">
@@ -84,19 +88,26 @@
     </div>
 
 
-    <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js"></script>
-    <!--因為需要登入驗證，所以需要firebase-auth-->
-    <script src="https://www.gstatic.com/firebasejs/5.8.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase-database.js"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+    <!-- 因為需要登入驗證，所以需要 firebase-auth -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-auth.js"></script>
+    <!-- 因為需要 real-time database，所以需要 firebase-database   -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-database.js"></script>
+
     <script>
-        // Initialize Firebase
-        var config = {
+        // Your web app's Firebase v7.21 configuration
+        var firebaseConfig = {
             apiKey: "AIzaSyBgYvQ3Bid9wjTDLcUmxWAEmHWI2X5Vzc4",
             authDomain: "my-first-test-project-227712.firebaseapp.com",
             databaseURL: "https://my-first-test-project-227712.firebaseio.com",
             projectId: "my-first-test-project-227712",
+            storageBucket: "my-first-test-project-227712.appspot.com",
+            messagingSenderId: "195305614724",
+            appId: "1:195305614724:web:b5287814aeddecb20e41d1"
         };
-        firebase.initializeApp(config);
+        // Initialize Firebase v7.21
+        firebase.initializeApp(firebaseConfig);
 
 
         let currentUser = { //不先定義uid，showMsg會出錯
@@ -104,7 +115,7 @@
         };
 
         //當使用者的登入狀態改變時，執行此函式
-        firebase.auth().onAuthStateChanged(function (user) {
+        firebase.auth().onAuthStateChanged(function(user) {
             let welcm = document.getElementById("welcome");
             let membr = document.getElementById("member");
             let signout = document.getElementById("signOut-des");
@@ -118,7 +129,6 @@
                 //現在的使用者 = 登入的使用者資訊
                 currentUser = user;
                 readMsg();
-
             } else { // User is signed out.
                 welcm.style.display = "block";
                 currentUser = {
@@ -139,10 +149,10 @@
         function signIn() {
             //使用跳出式登入視窗
             firebase.auth().signInWithPopup(provider)
-                .then(function (result) {
+                .then(function(result) {
                     console.log("Logged In~");
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                     var errorCode = error.code;
                     console.log("Error: ", error);
                     console.log("Error code: ", errorCode);
@@ -164,7 +174,7 @@
                 time: Date.now()
             }
             //將data物件加入資料庫
-            ref.push(data, function (error) {
+            ref.push(data, function(error) {
                 if (error) {
                     console.log("Error: ", error);
                 } else {
@@ -176,10 +186,10 @@
 
         function readMsg() {
             //用on()，當資料刷新時就會重跑一次
-            ref.on("value", function (snapshot) {
+            ref.on("value", function(snapshot) {
                 let data = [];
                 //firebase有提供forEach方法，對snapshot物件進行處理
-                snapshot.forEach(function (childSnapshot) {
+                snapshot.forEach(function(childSnapshot) {
                     //另外製造一個key和childSnapshot內容物同層的物件
                     let datachkpoint = childSnapshot.val();
                     //文件有說明：.key是物件的上一層的名稱
@@ -229,7 +239,7 @@
         function del() {
             //this表示執行此函式時，當下外層的物件
             let ref = firebase.database().ref("/message_board/" + this.key);
-            ref.remove(function (error) {
+            ref.remove(function(error) {
                 if (error) {
                     console.log("Error: ", error);
                 } else {
@@ -242,10 +252,10 @@
 
         function signOut() {
             firebase.auth().signOut()
-                .then(function () {
+                .then(function() {
                     // Sign-out successful.
                     console.log("Sign out");
-                }).catch(function (error) {
+                }).catch(function(error) {
                     // An error happened.
                     var errorCode = error.code;
                     console.log("Error: ", error);
@@ -253,6 +263,7 @@
                 });
         }
         signoutBtn.addEventListener("click", signOut);
+
     </script>
 
 </body>
