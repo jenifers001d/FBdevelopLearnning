@@ -32,6 +32,7 @@
         width: 600px;
         border: 1px solid black;
     }
+
 </style>
 
 <body>
@@ -43,8 +44,8 @@
         <button id="btn">Please Login</button>
     </div>
     <div id="main" style="display:none">hello</div>
-    <button id="sharebtn">分享</button>
-    <button id="sendbtn">發送</button>
+    <button id="sharebtn" style="display:none">分享</button>
+    <button id="sendbtn" style="display:none">發送</button>
     <div id="byebye" style="display:none">
         <button id="btn2">Click me Logout!</button>
     </div>
@@ -198,6 +199,9 @@
         }
         // 使用自己的按鈕，呼叫 logout()
         btn2.addEventListener("click", logout);
+
     </script>
 
-</body></html>
+</body>
+
+</html>
