@@ -110,6 +110,8 @@
         function statusChangeCallback(response) {
             welcome.style.display = "none";
             main.style.display = "none";
+            sharebtn.style.display = "none";
+            sendbtn.style.display = "none";
             byebye.style.display = "none";
 
             console.log('statusChangeCallback');
@@ -117,6 +119,8 @@
             if (response.status === 'connected') { //使用者已登入
                 testAPI(); // 抓取使用者的資料
                 main.style.display = "block";
+                sharebtn.style.display = "block";
+                sendbtn.style.display = "block";
                 byebye.style.display = "block";
             } else { // 使用者未登入，鼓勵使用者登入
                 welcome.style.display = "block";
@@ -187,6 +191,8 @@
                 console.log(response);
                 welcome.style.display = "block";
                 main.innerHTML = "已登出";
+                sharebtn.style.display = "none";
+                sendbtn.style.display = "none";
                 byebye.style.display = "none";
             });
         }
