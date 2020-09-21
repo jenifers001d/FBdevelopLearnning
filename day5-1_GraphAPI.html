@@ -56,10 +56,10 @@
     <p style="color: #ff4444">Notice that the response contains not only the IDs of the Post nodes in the collection, but the created_time and message fields as well. This is common. Most edges will include one or more fields by default. 通常預設出現的Edges有不只一個fields</p>
     <p style="color: #ff4444">Fields are node properties. When you query a node it will return a set of fields by default, as the examples above show. However, you can specify which fields you want returned. This will override the defaults and return only the fields you specify, and the ID of the object, which is always returned. 可以自訂想出現的fields，會覆蓋原有的預設值，且Edges的資料的ID必定出現</p>
     <hr>
-    <img src="day5_Node_me.jpg" alt="none">
-    <img src="day5_Node_me_fields_feed.jpg" alt="none">
-    <img src="day5_Edge_me_feed.jpg" alt="none">
-    <img src="day5_Edge_me_feed_fields.jpg" alt="none">
+    <img src="../image/day5_Node_me.jpg" alt="none">
+    <img src="../image/day5_Node_me_fields_feed.jpg" alt="none">
+    <img src="../image/day5_Edge_me_feed.jpg" alt="none">
+    <img src="../image/day5_Edge_me_feed_fields.jpg" alt="none">
     <hr>
     <div>
         <h3>Supplement</h3>
@@ -77,26 +77,22 @@
         </ul>
     </div>
 
-    <script>
-        //1.載入Facebook Javascript SDK
-        (function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "https://connect.facebook.net/en_US/sdk.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
+    <!-- Update 2020-09-21 from graph api v2.8 to v8.0  -->
 
-        //2.套件載入完成之後，呼叫 window.fbAsyncInit 函式
+    <!-- 1. 程式進入點 Entry point, 載入Facebook Javascript SDK -->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v8.0&appId=2292119871045628&autoLogAppEvents=1" nonce="dfkjmS6k"></script>
+
+    <script>
+        // 2.套件載入完成之後，呼叫 window.fbAsyncInit 函式
         window.fbAsyncInit = function() {
-            //初始化 Facebook SDK 套件
+            // 初始化 Facebook SDK 套件
             FB.init({
                 appId: '2292119871045628', //應用程式編號
                 xfbml: true,
-                version: 'v3.2'
+                version: 'v8.0'
             });
-            //初始化完後，偵測使用者登入狀態，呼叫statusChangeCallback()
+            // 初始化完後，偵測使用者登入狀態，呼叫statusChangeCallback()
             FB.getLoginStatus(function(response) {
                 statusChangeCallback(response);
             });
@@ -119,28 +115,34 @@
             console.log('statusChangeCallback');
             console.log(response);
             if (response.status === 'connected') { //使用者已登入
-                testAPI(); //抓取使用者的資料
+                testAPI(); // 抓取使用者的資料
                 main.style.display = "block";
                 byebye.style.display = "block";
-            } else { //使用者未登入，鼓勵使用者登入
+            } else { // 使用者未登入，鼓勵使用者登入
                 welcome.style.display = "block";
             }
         }
 
         function testAPI() {
             console.log('Welcome!  Fetching your information.... ');
-            FB.api('/me?fields=id,name,email,gender,birthday', function(response) {
-                console.log(response);
-                main.innerHTML =
-                    'Thanks for logging in, ' + response.name + '!';
-            });
+            FB.api(
+                '/me',
+                'GET', {
+                    "fields": "id,name,email,gender,birthday"
+                },
+                function(response) {
+                    console.log(response);
+                    main.innerHTML =
+                        'Thanks for logging in, ' + response.name + '!';
+                });
 
-            FB.api('/me/feed', function(response) {
+            FB.api('/me/feed', 'GET', {}, function(response) {
                 console.log(response);
             });
         }
 
-        //點擊自己的按鈕，呼叫FB.login()，scope是取得的資料權限
+        // 點擊自己的按鈕，呼叫 FB.login()，scope 是取得的資料權限
+        // To get all your Posts, you'll need to get a new access token and select "user_posts" permissions during the Get access token flow.
         function login() {
             FB.login(function(response) {
                 console.log("login");
@@ -149,11 +151,11 @@
                 scope: "email,user_gender,user_posts"
             });
         }
-        //使用自己的按鈕，呼叫login()
+        // 使用自己的按鈕，呼叫 login()
         btn.addEventListener("click", login);
 
-        //點擊自己的按鈕，呼叫FB.ui()，href是要分享的網址
-        //可以自訂分享時的預覽畫面
+        // 點擊自己的按鈕，呼叫 FB.ui()，href 是要分享的網址
+        // 可以自訂分享時的預覽畫面
         function share() {
             FB.ui({
                 method: 'share',
@@ -162,10 +164,10 @@
                 console.log(response);
             });
         }
-        //使用自己的按鈕，呼叫share()
+        // 使用自己的按鈕，呼叫 share()
         sharebtn.addEventListener("click", share);
 
-        //點擊自己的按鈕，呼叫FB.ui()，href是要分享的網址
+        // 點擊自己的按鈕，呼叫 FB.ui()，href 是要分享的網址
 
         function send() {
             FB.ui({
@@ -175,10 +177,10 @@
                 console.log(response);
             });
         }
-        //使用自己的按鈕，呼叫share()
+        // 使用自己的按鈕，呼叫 send()
         sendbtn.addEventListener("click", send);
 
-        //點擊自己的按鈕，呼叫FB.logout()
+        // 點擊自己的按鈕，呼叫 FB.logout()
         function logout() {
             FB.logout(function(response) {
                 console.log("logout");
@@ -188,10 +190,8 @@
                 byebye.style.display = "none";
             });
         }
-        //使用自己的按鈕，呼叫login()
+        // 使用自己的按鈕，呼叫 logout()
         btn2.addEventListener("click", logout);
     </script>
 
-</body>
-
-</html>
+</body></html>
