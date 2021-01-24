@@ -57,6 +57,10 @@
         margin: 20px;
     }
 
+    h3 {
+        margin-top: 20px;
+    }
+
     textarea,
     #signIn,
     #post,
@@ -135,12 +139,12 @@
     <div class="container">
         <div id="welcome" style="display: none">
             <p class="lead text-center">Please sing in to leave messages! </p>
-            <button id="signIn" class="btn btn-primary">Sign in</button>
+            <button id="signIn" class="btn btn-outline-dark">Sign in</button>
         </div>
         <div id="member" style="display: none">
             <h3>Leave Message</h3>
             <textarea id="content" cols="60" rows="7" class="form-control" placeholder="Message..."></textarea>
-            <button id="post" class="btn btn-default">Post</button>
+            <button id="post" class="btn btn-outline-dark">Post</button>
         </div>
         <div id="list">
         </div>
@@ -175,20 +179,24 @@
 
         //當使用者的登入狀態改變時，執行此函式
         firebase.auth().onAuthStateChanged(function(user) {
+            let notice = document.getElementById("notice");
             let welcm = document.getElementById("welcome");
             let membr = document.getElementById("member");
             let signout = document.getElementById("signOut-des");
+            notice.style.display = "none";
             welcm.style.display = "none";
             membr.style.display = "none";
             signout.style.display = "none";
             //如果有登入，會回傳一個「登入的使用者物件」
             if (user) { // User is signed in.
+                notice.style.display = "none";
                 membr.style.display = "block";
                 signout.style.display = "block";
                 //現在的使用者 = 登入的使用者資訊
                 currentUser = user;
                 readMsg();
             } else { // User is signed out.
+                notice.style.display = "block";
                 welcm.style.display = "block";
                 currentUser = {
                     uid: null
@@ -284,7 +292,7 @@
                 //如果現在登入的使用者是留言的人，出現刪除按鈕
                 if (currentUser.uid === data[i].user_id) {
                     let delBtn = document.createElement("button");
-                    delBtn.classList.add("delBtn", "btn", "btn-default", "btn-sm");
+                    delBtn.classList.add("delBtn", "btn", "btn-outline-dark", "btn-sm");
                     delBtn.textContent = "Delete";
                     elName.appendChild(delBtn);
                     //標籤元素Element(delBtn)是物件的一種
