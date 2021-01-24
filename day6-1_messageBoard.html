@@ -3,15 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>day6-1</title>
     <!-- Bootstrap -->
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
 </head>
 <style>
     body {
         background-color: rgb(238, 224, 207);
-
     }
 
     .header {
@@ -23,6 +24,33 @@
     h1 {
         margin: 10px;
         font-size: 50px;
+    }
+
+
+    #notice {
+        font-size: 15px;
+        margin: auto;
+        padding-left: 20px;
+        width: 55%;
+        border-radius: 10px;
+    }
+
+    @media screen and (max-width: 1024px) {
+        #notice {
+            width: 70%;
+        }
+    }
+
+    @media screen and (max-width: 767px) {
+        #notice {
+            width: 80%;
+        }
+    }
+
+    @media screen and (max-width: 490px) {
+        #notice {
+            width: 90%;
+        }
     }
 
     #welcome {
@@ -58,16 +86,47 @@
         position: absolute;
         right: 0;
     }
-
 </style>
 
-<body>
+<body class="">
     <!-- username: gnufoajidi_1547971817@tfbnw.net -->
     <!-- password: Abigail0123456789 -->
     <!-- username: open_hfvypsu_user@tfbnw.net -->
     <!-- password: Open0123456789 -->
     <div class="header">
         <h1 class="text-center">Message Board</h1>
+        <div id="notice" class="alert alert-warning">
+            <p class="lead">This application is still in developing mode. Please use Test Account to sign in.</p>
+            <p class="lead">Test Account: </p>
+            <div id="accounts" class="text-center">
+                <div class="account row">
+                    <div class="col-sm-6">Username</div>
+                    <div class="col-sm-6">Password</div>
+                </div>
+                <hr>
+                <div class="account row">
+                    <div class="col-sm-6">gnufoajidi_1547971817@tfbnw.net</div>
+                    <div class="col-sm-6">Abigail0123456789</div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">open_hfvypsu_user@tfbnw.net</div>
+                    <div class="col-sm-6">Open0123456789</div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">pcfiyfhcdu_1611483875@tfbnw.net</div>
+                    <div class="col-sm-6">Emily0123456789</div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">flmbihzoqt_1611483875@tfbnw.net</div>
+                    <div class="col-sm-6">Sharon0123456789</div>
+                </div>
+            </div>
+
+        </div>
+
         <div id="signOut-des" style="display: none">
             <p class="lead text-center">Would you like to sign out? </p>
             <button id="signOut" class="btn btn-primary">Sign out</button>
@@ -263,9 +322,9 @@
                 });
         }
         signoutBtn.addEventListener("click", signOut);
-
     </script>
+    <!-- Bootstrap -->
+    <!-- Latest compiled JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 
-</body>
-
-</html>
+</body></html>
